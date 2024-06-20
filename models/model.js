@@ -6,20 +6,7 @@ class Model {
 
     static async register({ email, first_name, last_name, password, profile_image }) {
         try {
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-            if (!emailRegex.test(email)) {
-                throw ({ message: 'must be email format' });
-            }
-            if (!email || !first_name || !last_name || !password) {
-                throw ({ message: 'cannot be null' })
-            }
-
-            if (password.length < 8) {
-                throw { message: "Password Invalid" }
-            }
-            password = await hashPassword(password)
-
+         
             let query = `INSERT INTO Users ("email", "first_name", "last_name", "password", "profile_image") 
             VALUES ($1, $2, $3, $4, $5) RETURNING *`;
             let result = await pool.query(query, [email, first_name, last_name, password, profile_image]);
@@ -36,7 +23,6 @@ class Model {
         };
         try {
             let result = await pool.query(query);
-            console.log(result.rows[0]);
             return result.rows[0];
         } catch (error) {
             throw error;
@@ -50,7 +36,6 @@ class Model {
         };
         try {
             let result = await pool.query(query);
-            console.log(result.rows[0]);
             return result.rows[0];
         } catch (error) {
             throw error;
