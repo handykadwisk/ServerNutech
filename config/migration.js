@@ -1,8 +1,9 @@
 const pool = require('./connection.js')
 
 const CreateTableUsers = `
-    create table if not exists "Users"(
+    create table if not exists "users"(
     id SERIAL PRIMARY KEY,
+    email VARCHAR(128) NOT NULL,
     first_name VARCHAR(128) NOT NULL,
     last_name VARCHAR(128) NOT NULL,
     password VARCHAR(128) NOT NULL,
@@ -10,7 +11,7 @@ const CreateTableUsers = `
     )
 `;
 const DropTable = `
-    drop table if exists "Users"
+    drop table if exists "users"
 `;
 
 const migrate = async()=> {
