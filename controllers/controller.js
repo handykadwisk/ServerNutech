@@ -147,25 +147,51 @@ module.exports = class Controller {
     //update profile image
     static async updateProfileImage(req, res) {
         try {
-          const id = req.user.id;
-          const profileImage = req.file.path;
-    
-          const updatedUser = await Model.updateImgUserById(id, { profile_image: profileImage });
-    
-          if (updatedUser) {
-            delete updatedUser.password;
-          }
-    
-          res.status(200).json({
-            status: 0,
-            message: "Update Profile Image berhasil",
-            data: updatedUser
-          });
+            const id = req.user.id;
+            const profileImage = req.file.path;
+
+            const updatedUser = await Model.updateImgUserById(id, { profile_image: profileImage });
+
+            if (updatedUser) {
+                delete updatedUser.password;
+            }
+
+            res.status(200).json({
+                status: 0,
+                message: "Update Profile Image berhasil",
+                data: updatedUser
+            });
         } catch (error) {
-          console.log(error.message,'errorr<<<<<<<<<');
-        //   res.status(500).json({ message: error.message });
+            console.log(error.message, 'errorr<<<<<<<<<');
+            //   res.status(500).json({ message: error.message });
         }
-      }
+    }
+
+    static async getBanner(req, res, next) {
+        try {
+            const data = await Model.getBanner()
+            res.status(200).json({
+                status: 0,
+                message: "Sukses",
+                data: data
+            });
+        } catch (error) {
+            next(error)
+        }
+    }
+    static async getService(req, res, next) {
+        try {
+            const data = await Model.getService()
+            res.status(200).json({
+                status: 0,
+                message: "Sukses",
+                data: data
+            });
+        } catch (error) {
+            console.log(error,'<<<<<');
+            // next(error)
+        }
+    }
 
 
 }

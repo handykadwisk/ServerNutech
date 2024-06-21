@@ -21,10 +21,13 @@ const errHandler = (err, req, res, next) => {
     case "FileTypeError":
       res.status(400).json({status:102, message: `Format Image tidak sesuai`,data:null })
       break;
+    case "Invalid Token":
+      res.status(400).json({status:108, message: `Token tidak valid atau kadaluwarsa`,data:null })
+      break;
     default:
-      console.log(err.message, "<<<<<<< ini errornya");
-      if(err.message === "jwt expired"){
-      res.status(400).json({ message: `Token tidak valid atau kadaluwarsa` })
+      // console.log(err.message, "<<<<<<< ini errornya");
+      if(err.message === "jwt expired" ||"invalid token" ){
+      res.status(400).json({status:108, message: `Token tidak valid atau kadaluwarsa`,data:null })
       }else{
         res.status(500).json({ message: "Internal Server Error" });
       }

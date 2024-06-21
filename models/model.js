@@ -1,5 +1,6 @@
 const Factory = require('./class')
 const pool = require('../config/connection');
+const { text } = require('express');
 const defaultProfileImg = `https://static-00.iconduck.com/assets.00/user-icon-1024x1024-dtzturco.png`
 
 class Model {
@@ -102,6 +103,27 @@ class Model {
           return rows[0];
         } catch (error) {
           throw new Error(error.message);
+        }
+      }
+
+      static async getBanner(){
+        try {
+            const query = {text:`SELECT * FROM banners`}
+            let result = await pool.query(query);
+            return result.rows;
+        } catch (error) {
+            throw error;
+            
+        }
+      }
+      static async getService(){
+        try {
+            const query = {text:`SELECT * FROM services`}
+            let result = await pool.query(query);
+            return result.rows;
+        } catch (error) {
+            throw error;
+            
         }
       }
 }

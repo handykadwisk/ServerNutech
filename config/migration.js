@@ -17,7 +17,7 @@ const CreateTableBanners = `
     create table if not exists "banners"(
     id SERIAL PRIMARY KEY,
     banner_name VARCHAR(128) NOT NULL,
-    baner_image VARCHAR(128) NOT NULL,
+    banner_image VARCHAR(128) NOT NULL,
     description VARCHAR(128) NOT NULL
     )
 `;
@@ -30,7 +30,7 @@ const CreateTableServices = `
     service_code VARCHAR(128) NOT NULL,
     service_name VARCHAR(128) NOT NULL,
     service_icon VARCHAR(128) NOT NULL,
-    service_tariff INTEGER(128) NOT NULL
+    service_tariff INT NOT NULL
     )
 `;
 const DropTableServices = `
@@ -39,11 +39,11 @@ const DropTableServices = `
 
 const migrate = async()=> {
     try {
-        // await pool.query(DropTable);
-        // await pool.query(CreateTableUsers)
-        // await pool.query(DropTableBanners);
-        // await pool.query(CreateTableBanners)
-        // await pool.query(DropTableServices);
+        await pool.query(DropTable);
+        await pool.query(CreateTableUsers)
+        await pool.query(DropTableBanners);
+        await pool.query(CreateTableBanners)
+        await pool.query(DropTableServices);
         await pool.query(CreateTableServices);
         console.log(`migrate done`);
     } catch (error) {

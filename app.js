@@ -9,11 +9,14 @@ const port = 3000;
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 
+app.get('/banner', Controller.getBanner)
 
 app.post('/registration',Controller.registration)
 app.post('/login',Controller.login)
 
 app.use(authentication)
+
+app.get('/service', Controller.getService)
 
 app.get('/profile', Controller.profile)
 app.put('/profile/update', Controller.updateData)
