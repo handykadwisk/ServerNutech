@@ -144,5 +144,28 @@ module.exports = class Controller {
         }
     }
 
+    //update profile image
+    static async updateProfileImage(req, res) {
+        try {
+          const id = req.user.id;
+          const profileImage = req.file.path;
+    
+          const updatedUser = await Model.updateImgUserById(id, { profile_image: profileImage });
+    
+          if (updatedUser) {
+            delete updatedUser.password;
+          }
+    
+          res.status(200).json({
+            status: 0,
+            message: "Update Profile Image berhasil",
+            data: updatedUser
+          });
+        } catch (error) {
+          console.log(error.message,'errorr<<<<<<<<<');
+        //   res.status(500).json({ message: error.message });
+        }
+      }
+
 
 }

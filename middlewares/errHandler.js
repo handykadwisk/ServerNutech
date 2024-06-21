@@ -18,6 +18,9 @@ const errHandler = (err, req, res, next) => {
     case "Email Invalid":
       res.status(400).json({status:102, message: `Paramter email tidak sesuai format`,data:null })
       break;
+    case "FileTypeError":
+      res.status(400).json({status:102, message: `Format Image tidak sesuai`,data:null })
+      break;
     default:
       console.log(err.message, "<<<<<<< ini errornya");
       if(err.message === "jwt expired"){
