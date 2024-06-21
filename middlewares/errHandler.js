@@ -7,28 +7,24 @@ const errHandler = (err, req, res, next) => {
       res.status(400).json({ message: "Username/Password cannot be empty" });
       break;
     case "Invalid Login":
-      res.status(401).json({ message: "Invalid Email/Password" });
-      break;
-    case "No User Found":
-      res.status(401).json({ message: "No User Found" });
-      break;
-    case "Login Validation":
-      res.status(403).json({ message: "Not Login yet" });
+      res.status(401).json({ status:103, message: "Username atau password salah", data:null });
       break;
     case "Password Invalid":
-      res.status(400).json({ message: "Password Must between 5 and 8" });
+      res.status(400).json({ message: "Password harus lebih dari 8 karakter" });
       break;
     case "Bad Request":
       res.status(400).json({ message: `${err.field} cannot be empty` })
       break;
-
     case "Email Invalid":
-      res.status(400).json({ message: `Paramter email tidak sesuai format` })
+      res.status(400).json({status:102, message: `Paramter email tidak sesuai format`,data:null })
       break;
-
     default:
-      console.log(err, "ini errornya");
-      res.status(500).json({ message: "Internal Server Error" });
+      console.log(err.message, "<<<<<<< ini errornya");
+      if(err.message === "jwt expired"){
+      res.status(400).json({ message: `Token tidak valid atau kadaluwarsa` })
+      }else{
+        res.status(500).json({ message: "Internal Server Error" });
+      }
       break;
   }
 };

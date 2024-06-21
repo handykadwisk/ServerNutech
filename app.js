@@ -14,6 +14,7 @@ app.post('/login',Controller.login)
 app.use(authentication)
 
 app.get('/profile', Controller.profile)
+app.put('/profile/update', Controller.updateData)
 
 
 app.use(errHandler)
