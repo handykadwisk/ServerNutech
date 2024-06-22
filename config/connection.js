@@ -6,7 +6,7 @@ const pool = new Pool({
     // database: 'nutechtest',
     // password: 'postgres',
     // port: 5432,
-    // idleTimeoutMillis: 100
+    // idleTimeoutMillis: 100,
 
     connectionString: process.env.DATABASE_URL,
 })
