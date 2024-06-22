@@ -67,14 +67,14 @@ const DropTableTransaction = `
 
 const migrate = async () => {
     try {
-        // await pool.query(DropTable);
-        // await pool.query(CreateTableUsers)
-        // await pool.query(DropTableBanners);
-        // await pool.query(CreateTableBanners)
-        // await pool.query(DropTableServices);
-        // await pool.query(CreateTableServices);
-        // await pool.query(DropTableBalance);
-        // await pool.query(CreateTableBalance);
+        await pool.query(DropTable);
+        await pool.query(CreateTableUsers)
+        await pool.query(DropTableBanners);
+        await pool.query(CreateTableBanners)
+        await pool.query(DropTableServices);
+        await pool.query(CreateTableServices);
+        await pool.query(DropTableBalance);
+        await pool.query(CreateTableBalance);
         await pool.query(DropTableTransaction);
         await pool.query(CreateTableTransaction);
         console.log(`migrate done`);

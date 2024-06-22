@@ -10,6 +10,13 @@ const port =process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 
+app.get('/', (req, res)=>{
+    res.status(200).json({
+        status: 0,
+        message: "Hello Word",
+        data: null
+    });
+})
 //getbanner routes
 app.get('/banner', Controller.getBanner)
 
