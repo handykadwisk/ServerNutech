@@ -5,7 +5,7 @@ const { authentication } = require('./middlewares/authentication');
 const { errHandler } = require('./middlewares/errHandler');
 const upload = require('./middlewares/uploader');
 const app = express();
-const port =process.env.PORT|| 6969;
+const port =process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
@@ -36,7 +36,7 @@ app.get('/transaction/history', Controller.history)
 
 
 app.use(errHandler)
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`Server is running on port ${port}`);
 });
 
