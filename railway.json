@@ -1,0 +1,13 @@
+{
+    "build": {
+      "builder": "nixpacks",
+      "nixpacksPlan": {
+        "phases": {
+          "install": "npm ci",
+          "migrate": "npm run migrate",
+          "start": "npm start"
+        }
+      }
+    }
+  }
+  
