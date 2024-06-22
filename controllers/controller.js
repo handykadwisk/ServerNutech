@@ -167,6 +167,7 @@ module.exports = class Controller {
         }
     }
 
+    //get banner
     static async getBanner(req, res, next) {
         try {
             const data = await Model.getBanner()
@@ -179,6 +180,7 @@ module.exports = class Controller {
             next(error)
         }
     }
+    //get services
     static async getService(req, res, next) {
         try {
             const data = await Model.getService()
@@ -188,8 +190,22 @@ module.exports = class Controller {
                 data: data
             });
         } catch (error) {
-            console.log(error,'<<<<<');
-            // next(error)
+            next(error)
+        }
+    }
+
+    static async getBalance(req, res, next){
+        try {
+            const id = req.user.id
+            const data = await Model.getBalance(id)
+            res.status(200).json({
+                status:0,
+                message:"Get Balance Berhasil",
+                data:data.balance
+            })
+        } catch (error) {
+            console.log(error.message);
+            next(error)
         }
     }
 

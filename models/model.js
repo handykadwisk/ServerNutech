@@ -72,60 +72,76 @@ class Model {
             throw error;
         }
     }
-    
+
+    //update image
     static async updateImgUserById(id, updateFields) {
         try {
-          const setClause = [];
-          const values = [];
-          let index = 1;
-    
-          for (const key in updateFields) {
-            if (key === 'profile_image' && !updateFields[key]) {
-              updateFields[key] = defaultProfileImg;
+            const setClause = [];
+            const values = [];
+            let index = 1;
+
+            for (const key in updateFields) {
+                if (key === 'profile_image' && !updateFields[key]) {
+                    updateFields[key] = defaultProfileImg;
+                }
+                setClause.push(`${key} = $${index}`);
+                values.push(updateFields[key]);
+                index++;
             }
-            setClause.push(`${key} = $${index}`);
-            values.push(updateFields[key]);
-            index++;
-          }
-    
-          values.push(id);
-    
-          const setClauseStr = setClause.join(', ');
-    
-          const query = `
+
+            values.push(id);
+
+            const setClauseStr = setClause.join(', ');
+
+            const query = `
             UPDATE Users 
             SET ${setClauseStr} 
             WHERE id = $${index} 
             RETURNING id, email, first_name, last_name, profile_image
           `;
-    
-          const { rows } = await pool.query(query, values);
-          return rows[0];
-        } catch (error) {
-          throw new Error(error.message);
-        }
-      }
 
-      static async getBanner(){
+            const { rows } = await pool.query(query, values);
+            return rows[0];
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    //getbanner
+    static async getBanner() {
         try {
-            const query = {text:`SELECT * FROM banners`}
+            const query = { text: `SELECT * FROM banners` }
             let result = await pool.query(query);
             return result.rows;
         } catch (error) {
             throw error;
-            
         }
-      }
-      static async getService(){
+    }
+
+    //getservice
+    static async getService() {
         try {
-            const query = {text:`SELECT * FROM services`}
+            const query = { text: `SELECT * FROM services` }
             let result = await pool.query(query);
             return result.rows;
         } catch (error) {
             throw error;
-            
         }
-      }
+    }
+
+    //getBalance
+    static async getBalance(id) {
+        try {
+            const query = {
+                text: `SELECT * FROM balance WHERE "user_id" = $1`,
+                values: [id]
+            };
+            let result = await pool.query(query);
+            return result.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports = { Model }
