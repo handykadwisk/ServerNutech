@@ -1,10 +1,11 @@
+require("dotenv").config();
 const express = require('express');
 const Controller = require('./controllers/controller');
 const { authentication } = require('./middlewares/authentication');
 const { errHandler } = require('./middlewares/errHandler');
 const upload = require('./middlewares/uploader');
 const app = express();
-const port = 3000;
+const port =process.env.PORT|| 6969;
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
