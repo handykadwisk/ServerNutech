@@ -1,6 +1,4 @@
-const Factory = require('./class')
 const pool = require('../config/connection');
-const { text } = require('express');
 const defaultProfileImg = `https://static-00.iconduck.com/assets.00/user-icon-1024x1024-dtzturco.png`
 
 class Model {
@@ -128,12 +126,25 @@ class Model {
             throw error;
         }
     }
+    //getservice
+    static async getServicebyCode(service_code) {
+        try {
+            const query = {
+                text: `SELECT * FROM services WHERE "service_code" = $1`,
+                values: [service_code]
+            };
+            let result = await pool.query(query);
+            return result.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
 
     //getBalance
     static async getBalance(id) {
         try {
             const query = {
-                text: `SELECT * FROM balance WHERE "user_id" = $1`,
+                text: `SELECT * FROM balances WHERE "user_id" = $1`,
                 values: [id]
             };
             let result = await pool.query(query);
@@ -142,6 +153,112 @@ class Model {
             throw error;
         }
     }
+
+    //topup
+    static async topup(user_id, amount) {
+        try {
+
+            const updateBalanceQuery = `
+            UPDATE balances
+            SET balance = balance + $1
+            WHERE user_id = $2
+            RETURNING balance;
+        `;
+            const result = await pool.query(updateBalanceQuery, [amount, user_id]);
+
+            // Generate invoice_number
+            const date = new Date();
+            const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
+            const countTransactionsQuery = `
+                SELECT COUNT(*) as count 
+                FROM transactions 
+                WHERE created_on::date = $1;
+            `;
+            const countResult = await pool.query(countTransactionsQuery, [formattedDate]);
+            const count = parseInt(countResult.rows[0].count, 10) + 1;
+            const invoiceNumber = `INV${formattedDate}-${count.toString().padStart(3, '0')}`;
+
+            const insertTransactionQuery = `
+            INSERT INTO transactions (user_id, invoice_number, transaction_type, description, total_amount)
+            VALUES ($1, $2, 'TOPUP', 'Top Up balance', $3);
+        `;
+            await pool.query(insertTransactionQuery, [user_id, invoiceNumber, amount]);
+
+            return result.rows[0];
+
+        } catch (error) {
+            console.log(error.message);
+            throw error;
+
+        }
+    }
+
+    //transaction
+    static async transaction(user_id, service_code) {
+        const service_data = await this.getServicebyCode(service_code)
+        try {
+            const amount = service_data.service_tariff
+
+            const updateBalanceQuery = `
+            UPDATE balances
+            SET balance = balance - $1
+            WHERE user_id = $2
+            RETURNING balance;
+        `;
+            await pool.query(updateBalanceQuery, [amount, user_id]);
+
+            //Generate invoice_number
+            const date = new Date();
+            const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
+            const countTransactionsQuery = `
+                SELECT COUNT(*) as count 
+                FROM transactions 
+                WHERE created_on::date = $1;
+            `;
+            const countResult = await pool.query(countTransactionsQuery, [formattedDate]);
+            const count = parseInt(countResult.rows[0].count, 10) + 1;
+            const invoiceNumber = `INV${formattedDate}-${count.toString().padStart(3, '0')}`;
+
+            const insertTransactionQuery = `
+            INSERT INTO transactions (user_id, invoice_number, transaction_type, description, total_amount)
+            VALUES ($1, $2, 'PAYMENT', $3 , $4) 
+            RETURNING invoice_number,transaction_type,description,total_amount,created_on;
+        `;
+            const result_transaction = await pool.query(insertTransactionQuery, [user_id, invoiceNumber, service_code, amount]);
+
+            return result_transaction.rows[0]
+
+
+        } catch (error) {
+            console.log(error.message);
+            throw error;
+
+        }
+    }
+
+    //get transactions
+    static async getTransactionHistory(userId, limit) {
+       try {
+        let query = `
+        SELECT * FROM Transactions
+        WHERE user_id = $1
+        ORDER BY created_on DESC
+      `;
+  
+      if (limit) {
+        query += ` LIMIT $2`;
+        const values = [userId, limit];
+        const { rows } = await pool.query(query, values);
+        return rows;
+      } else {
+        const values = [userId];
+        const { rows } = await pool.query(query, values);
+        return rows;
+      }
+       } catch (error) {
+        throw error.message
+       }
+      }
 }
 
 module.exports = { Model }

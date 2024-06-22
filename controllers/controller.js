@@ -49,8 +49,8 @@ module.exports = class Controller {
             });
 
         } catch (error) {
-            console.log(error);
-            next(error);
+            next(error)
+
         }
     }
 
@@ -145,7 +145,7 @@ module.exports = class Controller {
     }
 
     //update profile image
-    static async updateProfileImage(req, res) {
+    static async updateProfileImage(req, res,next) {
         try {
             const id = req.user.id;
             const profileImage = req.file.path;
@@ -162,8 +162,7 @@ module.exports = class Controller {
                 data: updatedUser
             });
         } catch (error) {
-            console.log(error.message, 'errorr<<<<<<<<<');
-            //   res.status(500).json({ message: error.message });
+            next(error)
         }
     }
 
@@ -194,20 +193,91 @@ module.exports = class Controller {
         }
     }
 
-    static async getBalance(req, res, next){
+    //get balance
+    static async getBalance(req, res, next) {
         try {
             const id = req.user.id
             const data = await Model.getBalance(id)
             res.status(200).json({
-                status:0,
-                message:"Get Balance Berhasil",
-                data:data.balance
+                status: 0,
+                message: "Get Balance Berhasil",
+                data: data.balance
             })
         } catch (error) {
             console.log(error.message);
             next(error)
         }
     }
+
+    //topup
+    static async topup(req, res, next) {
+        try {
+            const user_id = req.user.id
+            const amount = req.body.top_up_amount
+
+            if (isNaN(amount) || amount <= 0 ) throw { name: "invalid amount" }
+
+            const data = await Model.topup(user_id, amount)
+
+            res.status(200).json({
+                status: 0,
+                message: "Top Up Balance berhasil",
+                data: data.balance
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    //trasaction
+    static async transaction(req, res, next) {
+        try {
+            const user_id = req.user.id
+            const service_code = req.body.service_code
+
+            const service = await Model.getServicebyCode(service_code)
+            if (!service) throw { name :"invalid service_code"}
+
+            let data = await Model.transaction(user_id, service_code)
+
+            res.status(200).json({
+                status: 0,
+                message: "Transaksi berhasil",
+                data:{
+                    invoice_number: data.invoice_number,
+                    service_code: service.service_code ,
+                    service_name: service.service_name,
+                    transaction_type: data.transaction_type,
+                    total_amount:data.total_amount,
+                    created_on: data.created_on
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    //transactions history
+    static async history(req, res,next) {
+        try {
+          const userId = req.user.id;
+          const limit = req.query.limit ? parseInt(req.query.limit) : null;
+    
+          const data = await Model.getTransactionHistory(userId, limit);
+    
+          res.status(200).json({
+            status: 0,
+            message: 'Get History Berhasil',
+            limit,
+            records: { data }
+          });
+        } catch (error) {
+          console.error(error);
+          next(error)
+        }
+      }
+
+
 
 
 }

@@ -28,6 +28,9 @@ app.put('/profile/update', Controller.updateData)
 app.put('/profile/image', upload.single('profile_image'), Controller.updateProfileImage)
 
 app.get('/balance',Controller.getBalance)
+app.post('/topup',Controller.topup)
+app.post('/transaction',Controller.transaction)
+app.get('/transaction/history', Controller.history)
 
 
 

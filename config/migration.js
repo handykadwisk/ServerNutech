@@ -55,8 +55,6 @@ const CreateTableTransaction = `
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     invoice_number VARCHAR(50) NOT NULL,
-    service_code VARCHAR(50) NOT NULL,
-    service_name VARCHAR(50) NOT NULL,
     transaction_type VARCHAR(50) NOT NULL,
     description VARCHAR(128) NOT NULL,
     total_amount INT NOT NULL,
@@ -75,8 +73,10 @@ const migrate = async () => {
         // await pool.query(CreateTableBanners)
         // await pool.query(DropTableServices);
         // await pool.query(CreateTableServices);
-        await pool.query(DropTableBalance);
-        await pool.query(CreateTableBalance);
+        // await pool.query(DropTableBalance);
+        // await pool.query(CreateTableBalance);
+        await pool.query(DropTableTransaction);
+        await pool.query(CreateTableTransaction);
         console.log(`migrate done`);
     } catch (error) {
         console.log(error.message, 'eroooor');
