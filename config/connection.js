@@ -7,7 +7,12 @@ const pool = new Pool({
     password: 'NfRAkbVzkgeLgdbidqmnsygLlHxhIyXB',
     port: 53861,
     idleTimeoutMillis: 100
-
+    // user: 'postgres',
+    // host: 'localhost',
+    // database: 'nutechtest',
+    // password: 'postgres',
+    // port: 5432,
+    // idleTimeoutMillis: 100
 })
 
 const test = async () => {

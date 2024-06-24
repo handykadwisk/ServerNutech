@@ -1,3 +1,4 @@
+const e = require('express');
 const { hashPassword, comparePassword } = require('../helpers/bcrypt');
 const { signToken } = require('../helpers/jwt');
 const { Model } = require('../models/model')
@@ -96,6 +97,7 @@ module.exports = class Controller {
             });
         } catch (error) {
             next(error)
+            console.log(error.message);
         }
     }
 
@@ -226,6 +228,7 @@ module.exports = class Controller {
             })
         } catch (error) {
             next(error)
+            console.log(error.message);
         }
     }
 
