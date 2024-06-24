@@ -155,13 +155,50 @@ class Model {
     }
 
     //topup
-    static async topup(user_id, amount) {
+    static async update_topup(user_id, amount) {
         try {
 
             const updateBalanceQuery = `
             UPDATE balances
             SET balance = balance + $1
             WHERE user_id = $2
+            RETURNING balance;
+        `;
+            const result = await pool.query(updateBalanceQuery, [amount, user_id]);
+
+            // Generate invoice_number
+            const date = new Date();
+            const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
+            const countTransactionsQuery = `
+                SELECT COUNT(*) as count 
+                FROM transactions 
+                WHERE created_on::date = $1;
+            `;
+            const countResult = await pool.query(countTransactionsQuery, [formattedDate]);
+            const count = parseInt(countResult.rows[0].count, 10) + 1;
+            const invoiceNumber = `INV${formattedDate}-${count.toString().padStart(3, '0')}`;
+
+            const insertTransactionQuery = `
+            INSERT INTO transactions (user_id, invoice_number, transaction_type, description, total_amount)
+            VALUES ($1, $2, 'TOPUP', 'Top Up balance', $3);
+        `;
+            await pool.query(insertTransactionQuery, [user_id, invoiceNumber, amount]);
+
+            return result.rows[0];
+
+        } catch (error) {
+            console.log(error.message);
+            throw error;
+
+        }
+    }
+
+    static async insert_topup(user_id, amount) {
+        try {
+
+            const updateBalanceQuery = `
+            INSERT INTO balances (user_id, balance)
+            SELECT $2, $1
             RETURNING balance;
         `;
             const result = await pool.query(updateBalanceQuery, [amount, user_id]);
@@ -238,27 +275,27 @@ class Model {
 
     //get transactions
     static async getTransactionHistory(userId, limit) {
-       try {
-        let query = `
+        try {
+            let query = `
         SELECT * FROM Transactions
         WHERE user_id = $1
         ORDER BY created_on DESC
       `;
-  
-      if (limit) {
-        query += ` LIMIT $2`;
-        const values = [userId, limit];
-        const { rows } = await pool.query(query, values);
-        return rows;
-      } else {
-        const values = [userId];
-        const { rows } = await pool.query(query, values);
-        return rows;
-      }
-       } catch (error) {
-        throw error.message
-       }
-      }
+
+            if (limit) {
+                query += ` LIMIT $2`;
+                const values = [userId, limit];
+                const { rows } = await pool.query(query, values);
+                return rows;
+            } else {
+                const values = [userId];
+                const { rows } = await pool.query(query, values);
+                return rows;
+            }
+        } catch (error) {
+            throw error.message
+        }
+    }
 }
 
 module.exports = { Model }

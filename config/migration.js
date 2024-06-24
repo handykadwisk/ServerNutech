@@ -39,12 +39,15 @@ const DropTableServices = `
     drop table if exists "services"
 `;
 
-const CreateTableBalance = `
-    create table if not exists "Balance"(
+const CreateTableBalances = `
+    create table if not exists "balances"(
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     balance VARCHAR(128) NOT NULL
     )
+`;
+const DropTableBalances = `
+    drop table if exists "balances"
 `;
 const DropTableBalance = `
     drop table if exists "Balance"
@@ -67,16 +70,17 @@ const DropTableTransaction = `
 
 const migrate = async () => {
     try {
-        await pool.query(DropTable);
-        await pool.query(CreateTableUsers)
-        await pool.query(DropTableBanners);
-        await pool.query(CreateTableBanners)
-        await pool.query(DropTableServices);
-        await pool.query(CreateTableServices);
+        // await pool.query(DropTable);
+        // await pool.query(CreateTableUsers)
+        // await pool.query(DropTableBanners);
+        // await pool.query(CreateTableBanners)
+        // await pool.query(DropTableServices);
+        // await pool.query(CreateTableServices);
         await pool.query(DropTableBalance);
-        await pool.query(CreateTableBalance);
-        await pool.query(DropTableTransaction);
-        await pool.query(CreateTableTransaction);
+        await pool.query(DropTableBalances);
+        await pool.query(CreateTableBalances);
+        // await pool.query(DropTableTransaction);
+        // await pool.query(CreateTableTransaction);
         console.log(`migrate done`);
     } catch (error) {
         console.log(error.message, 'eroooor');

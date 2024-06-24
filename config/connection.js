@@ -1,18 +1,18 @@
 const { Pool } = require('pg')
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'monorail.proxy.rlwy.net',
-    database: 'railway',
-    password: 'NfRAkbVzkgeLgdbidqmnsygLlHxhIyXB',
-    port: 53861,
-    idleTimeoutMillis: 100
     // user: 'postgres',
-    // host: 'localhost',
-    // database: 'nutechtest',
-    // password: 'postgres',
-    // port: 5432,
+    // host: 'monorail.proxy.rlwy.net',
+    // database: 'railway',
+    // password: 'NfRAkbVzkgeLgdbidqmnsygLlHxhIyXB',
+    // port: 53861,
     // idleTimeoutMillis: 100
+    user: 'postgres',
+    host: 'localhost',
+    database: 'nutechtest',
+    password: 'postgres',
+    port: 5432,
+    idleTimeoutMillis: 100
 })
 
 const test = async () => {
